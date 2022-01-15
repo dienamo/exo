@@ -75,13 +75,14 @@ router.post("/signup", (req, res, next) => {
   });
 });
 
-router.get("/logout", (req, res) => {
+router.post("/logout", (req, res) => {
+  req.session.destroy;
   req.logout();
-  res.status(204).send();
+  res.status(200).json({ message: "Log out successful!" });
 });
 
 router.get("/loggedin", (req, res, next) => {
-  if (req.user) {
+  if (req.isAuthenticated) {
     res.status(200).json(req.user);
     return;
   }

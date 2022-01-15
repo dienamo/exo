@@ -4,7 +4,9 @@ const dotenv = require("dotenv");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const authRoutes = require("./routes/auth");
+const moviesRoutes = require("./routes/movies");
 const session = require("express-session");
+const passport = require("passport");
 
 dotenv.config();
 
@@ -22,15 +24,19 @@ app.use(
 app.use(
   session({
     secret: `secretkey`,
-    resave: true,
+    resave: false,
     saveUninitialized: true,
   })
 );
 
 require("./passport")(app);
+app.use(passport.initialize());
+app.use(passport.session());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use("/auth", authRoutes);
+
+app.use("/api", authRoutes);
+app.use("/api", moviesRoutes);
 
 mongoose
   .connect(process.env.MONGODB_URI, {
